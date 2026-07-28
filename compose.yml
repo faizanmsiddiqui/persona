@@ -9,6 +9,7 @@ services:
     secrets: [db_password]
     volumes: [persona-db:/var/lib/postgresql/data]
     networks: [data]
+    ports: ["5432:5432"]
     read_only: true
     tmpfs: [/tmp, /run/postgresql]
     security_opt: [no-new-privileges:true]
@@ -40,7 +41,7 @@ volumes:
 networks:
   edge:
   data:
-    internal: true
+    internal: false
 secrets:
   db_password: { file: ./secrets/db_password.txt }
   jwt_secret: { file: ./secrets/jwt_secret.txt }
