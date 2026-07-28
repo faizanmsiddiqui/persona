@@ -1,0 +1,21 @@
+name: DevSecOps Pipeline (full)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  security:
+    uses: ./.github/workflows/security-checks.yml
+    with:
+      secret_scanning: run
+      sca: run
+      sast: run
+      iac_scanning: run
+      container_scanning: run
+      dast: run

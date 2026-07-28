@@ -1,0 +1,174 @@
+name: Security Checks
+
+on:
+  workflow_call:
+    inputs:
+      secret_scanning: {type: string, required: true}
+      sca: {type: string, required: true}
+      sast: {type: string, required: true}
+      iac_scanning: {type: string, required: true}
+      container_scanning: {type: string, required: true}
+      dast: {type: string, required: true}
+
+permissions:
+  contents: read
+
+jobs:
+  secret-scanning:
+    if: inputs.secret_scanning != 'skip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "false"
+      - if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: secret-scanning-${{ github.sha }}
+          path: results.sarif
+          retention-days: 30
+          if-no-files-found: warn
+
+  sca:
+    if: inputs.sca != 'skip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: "22"
+      - name: Audit dependencies
+        run: |
+          mkdir -p artifacts
+          python -m pip install "pip==25.3" "pip-audit==2.10.1" "pip-tools==7.5.2"
+          pip-compile backend/pyproject.toml --output-file artifacts/backend-requirements.txt --strip-extras
+          pip-audit --requirement artifacts/backend-requirements.txt --format json --output artifacts/pip-audit.json
+          npm --prefix frontend install --ignore-scripts
+          npm --prefix frontend audit --omit=dev --audit-level=high
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          format: sarif
+          output: artifacts/trivy-fs.sarif
+      - if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: sca-${{ github.sha }}
+          path: artifacts/
+          retention-days: 30
+
+  sast:
+    if: inputs.sast != 'skip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.12"
+      - run: python -m pip install semgrep bandit
+      - run: mkdir -p artifacts && semgrep scan --config p/owasp-top-ten --json --output artifacts/semgrep.json --error
+      - run: bandit -r backend/app -f json -o artifacts/bandit.json
+      - if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: sast-${{ github.sha }}
+          path: artifacts/
+          retention-days: 30
+
+  iac-scanning:
+    if: inputs.iac_scanning != 'skip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          framework: dockerfile,yaml,github_actions
+          output_format: cli,json
+          output_file_path: console,artifacts/checkov.json
+          quiet: true
+      - if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: iac-scanning-${{ github.sha }}
+          path: artifacts/
+          retention-days: 30
+
+  container-scanning:
+    if: inputs.container_scanning != 'skip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - run: |
+          docker build -t persona-api:${{ github.sha }} backend
+          docker build -t persona-web:${{ github.sha }} frontend
+          mkdir -p artifacts
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: persona-api:${{ github.sha }}
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          format: cyclonedx
+          output: artifacts/api-sbom.json
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: persona-web:${{ github.sha }}
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          format: cyclonedx
+          output: artifacts/web-sbom.json
+      - if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: container-scanning-${{ github.sha }}
+          path: artifacts/
+          retention-days: 30
+
+  dast:
+    if: inputs.dast != 'skip'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Start isolated stack
+        run: |
+          ./scripts/init-secrets.sh
+          if ! docker compose up -d --build --wait; then
+            docker compose ps --all || true
+            docker compose logs --no-color || true
+            exit 1
+          fi
+      - run: curl --fail --retry 10 --retry-delay 3 http://localhost:8080/health/live
+      - uses: zaproxy/action-baseline@v0.15.0
+        with:
+          target: http://localhost:8080
+          artifact_name: dast-zap-${{ github.sha }}
+          allow_issue_writing: false
+      - if: always()
+        run: |
+          mkdir -p artifacts
+          docker compose logs --no-color > artifacts/compose.log || true
+          docker compose ps --all > artifacts/compose-ps.txt || true
+          docker compose down -v
+      - if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: dast-container-logs-${{ github.sha }}
+          path: artifacts/
+          retention-days: 30
+          if-no-files-found: warn

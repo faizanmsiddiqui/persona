@@ -1,0 +1,51 @@
+name: DevSecOps Pipeline (secorch)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      checks: ${{ steps.secorch.outputs.checks }}
+      risk_level: ${{ steps.secorch.outputs.risk_level }}
+      report: ${{ steps.secorch.outputs.report }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install git+https://github.com/faizanmsiddiqui/secorch.git
+      - run: secorch init --force
+      - id: secorch
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: secorch analyze --report artifacts/secorch-report.pdf
+      - if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: secorch-decision-${{ github.sha }}
+          path: artifacts/
+          retention-days: 30
+          if-no-files-found: warn
+
+  security:
+    needs: orchestrate
+    uses: ./.github/workflows/security-checks.yml
+    with:
+      secret_scanning: ${{ fromJSON(needs.orchestrate.outputs.checks).secret_scanning }}
+      sca: ${{ fromJSON(needs.orchestrate.outputs.checks).sca }}
+      sast: ${{ fromJSON(needs.orchestrate.outputs.checks).sast }}
+      iac_scanning: ${{ fromJSON(needs.orchestrate.outputs.checks).iac_scanning }}
+      container_scanning: ${{ fromJSON(needs.orchestrate.outputs.checks).container_scanning }}
+      dast: ${{ fromJSON(needs.orchestrate.outputs.checks).dast }}
