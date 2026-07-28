@@ -12,6 +12,9 @@ export function Editor({
 }) {
   const [resume, setResume] = useState(initial);
   const [state, setState] = useState<"saved" | "saving" | "conflict">("saved");
+  const [shareUrl, setShareUrl] = useState(
+    initial.share_slug ? `${location.origin}/share/${initial.share_slug}` : "",
+  );
   useEffect(() => {
     if (resume === initial) return;
     const timer = window.setTimeout(async () => {
@@ -57,27 +60,42 @@ export function Editor({
         </button>
         <span aria-live="polite">{state}</span>
       </div>
-      <button
-        onClick={async () => {
-          const response = await fetch(`/api/v1/resumes/${resume.id}/pdf`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "X-CSRF-Token": decodeURIComponent(
-                document.cookie.match(/(?:^|; )csrf_token=([^;]+)/)?.[1] ?? "",
-              ),
-            },
-          });
-          const url = URL.createObjectURL(await response.blob());
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = "resume.pdf";
-          link.click();
-          URL.revokeObjectURL(url);
-        }}
-      >
-        Download PDF
-      </button>
+      <div className="toolbar">
+        <button
+          onClick={async () => {
+            const response = await fetch(`/api/v1/resumes/${resume.id}/pdf`, {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "X-CSRF-Token": decodeURIComponent(
+                  document.cookie.match(/(?:^|; )csrf_token=([^;]+)/)?.[1] ??
+                    "",
+                ),
+              },
+            });
+            const url = URL.createObjectURL(await response.blob());
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "resume.pdf";
+            link.click();
+            URL.revokeObjectURL(url);
+          }}
+        >
+          Download PDF
+        </button>
+        <button
+          onClick={async () => {
+            const result = await api<{ share_slug: string }>(
+              `/resumes/${resume.id}/share`,
+              { method: "POST" },
+            );
+            setShareUrl(`${location.origin}/share/${result.share_slug}`);
+          }}
+        >
+          Share
+        </button>
+        {shareUrl && <output>{shareUrl}</output>}
+      </div>
       <div className="editor">
         <form className="card">
           <label>
