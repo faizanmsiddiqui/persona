@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .config import get_settings
+from .db import engine
 from .routers.auth import router as auth_router
 from .routers.profile import router as profile_router
 from .routers.resumes import router as resumes_router
@@ -44,3 +45,10 @@ async def security_headers(request, call_next):
 @app.get("/health/live", tags=["health"])
 def live() -> dict[str, str]:
     return {"status": "ok"}
+
+@app.get("/health/ready", tags=["health"])
+def ready() -> dict[str, str]:
+    from sqlalchemy import text
+    with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))
+    return {"status": "ready"}
