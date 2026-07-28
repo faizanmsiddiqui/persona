@@ -1,1 +1,0 @@
-SCANNER_API_KEY = "ghp_h23h7sdfjhsdif7ysfbjsfy8sfbsjy78sfsjfys7ufbsjfysifbhb"
