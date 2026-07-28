@@ -23,9 +23,17 @@ export type ResumeDocument = {
     spacing: "compact" | "comfortable";
   };
 };
+export type SectionKind =
+  | "experience"
+  | "education"
+  | "skills"
+  | "projects"
+  | "certifications"
+  | "languages"
+  | "custom";
 export type Section = {
   id: string;
-  kind: string;
+  kind: SectionKind;
   title: string;
   order: number;
   visible: boolean;

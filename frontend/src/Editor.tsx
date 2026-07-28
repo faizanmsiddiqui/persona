@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "./api";
 import type { Resume } from "./types";
 import { Preview } from "./Preview";
+import { SectionEditor } from "./SectionEditor";
 
 export const AUTO_SAVE_DELAY_MS = 3 * 60 * 1000;
 
@@ -90,7 +91,10 @@ export function Editor({
   }
 
   const basics = resume.document.basics;
-  function basic(name: keyof typeof basics, value: string) {
+  function basic(
+    name: "name" | "headline" | "email" | "phone" | "location" | "summary",
+    value: string,
+  ) {
     updateResume((current) => ({
       ...current,
       document: {
@@ -175,6 +179,29 @@ export function Editor({
             />
           </label>
           <label>
+            Email
+            <input
+              type="email"
+              value={basics.email ?? ""}
+              onChange={(event) => basic("email", event.target.value)}
+            />
+          </label>
+          <label>
+            Phone
+            <input
+              type="tel"
+              value={basics.phone}
+              onChange={(event) => basic("phone", event.target.value)}
+            />
+          </label>
+          <label>
+            Location
+            <input
+              value={basics.location}
+              onChange={(event) => basic("location", event.target.value)}
+            />
+          </label>
+          <label>
             Summary
             <textarea
               rows={7}
@@ -201,17 +228,16 @@ export function Editor({
               }
             />
           </label>
-          {resume.document.sections.map((section, index) => (
-            <div className="section-row" key={section.id}>
-              <span>{section.title}</span>
-              <button type="button" onClick={() => moveSection(index, -1)}>
-                ↑
-              </button>
-              <button type="button" onClick={() => moveSection(index, 1)}>
-                ↓
-              </button>
-            </div>
-          ))}
+          <SectionEditor
+            sections={resume.document.sections}
+            onMove={moveSection}
+            onChange={(sections) =>
+              updateResume((current) => ({
+                ...current,
+                document: { ...current.document, sections },
+              }))
+            }
+          />
         </form>
         <Preview document={resume.document} />
       </div>
