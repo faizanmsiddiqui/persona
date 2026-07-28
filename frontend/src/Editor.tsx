@@ -40,6 +40,14 @@ export function Editor({
       document: { ...resume.document, basics: { ...basics, [name]: value } },
     });
   }
+  function moveSection(index: number, direction: -1 | 1) {
+    const target = index + direction;
+    if (target < 0 || target >= resume.document.sections.length) return;
+    const sections = [...resume.document.sections];
+    [sections[index], sections[target]] = [sections[target], sections[index]];
+    sections.forEach((section, order) => (section.order = order));
+    setResume({ ...resume, document: { ...resume.document, sections } });
+  }
   return (
     <section>
       <div className="toolbar">
@@ -79,6 +87,17 @@ export function Editor({
               onChange={(e) => basic("summary", e.target.value)}
             />
           </label>
+          {resume.document.sections.map((section, index) => (
+            <div className="section-row" key={section.id}>
+              <span>{section.title}</span>
+              <button type="button" onClick={() => moveSection(index, -1)}>
+                ↑
+              </button>
+              <button type="button" onClick={() => moveSection(index, 1)}>
+                ↓
+              </button>
+            </div>
+          ))}
         </form>
         <article className="preview">
           <h2>{basics.name || "Your name"}</h2>
