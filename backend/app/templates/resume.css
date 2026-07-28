@@ -9,7 +9,7 @@
 
 body {
   margin: 0;
-  color: #17212b;
+  color: #17233b;
   font-family: Arial, "Liberation Sans", sans-serif;
   font-size: 10pt;
   line-height: 1.45;
@@ -24,13 +24,13 @@ body {
 
 .preview-header h2 {
   margin: 6pt 0;
-  color: #53635e;
+  color: #5b6b85;
   font-size: 13pt;
   font-weight: 600;
 }
 
 .preview-contact {
-  color: #63716d;
+  color: #5b6b85;
   font-size: 8.5pt;
 }
 
@@ -49,7 +49,7 @@ body {
   border-bottom: 2px solid var(--accent);
   color: var(--accent);
   font-size: 10pt;
-  letter-spacing: .06em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -82,7 +82,7 @@ body {
 
 .preview-item-heading span,
 .preview-item-heading time {
-  color: #63716d;
+  color: #5b6b85;
   font-size: 8.5pt;
 }
 

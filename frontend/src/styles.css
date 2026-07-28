@@ -1,7 +1,17 @@
 :root {
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-primary-soft: #dbeafe;
+  --color-page: #f5f9ff;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f8fbff;
+  --color-text: #17233b;
+  --color-text-muted: #5b6b85;
+  --color-border: #cbd8ea;
+  --color-divider: #dbe5f2;
   font-family: Inter, system-ui, sans-serif;
-  color: #17212b;
-  background: #f4f1ea;
+  color: var(--color-text);
+  background: var(--color-page);
 }
 body {
   margin: 0;
@@ -14,16 +24,16 @@ main {
 h1 {
   font-size: clamp(3rem, 10vw, 7rem);
   margin: 0;
-  color: #176b5b;
+  color: var(--color-primary);
 }
 .card {
   display: grid;
   gap: 1rem;
   max-width: 28rem;
   padding: 2rem;
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 1rem;
-  box-shadow: 0 1rem 3rem #17212b18;
+  box-shadow: 0 1rem 3rem #17233b18;
 }
 label {
   display: grid;
@@ -36,11 +46,11 @@ select,
 button {
   font: inherit;
   padding: 0.75rem;
-  border: 1px solid #a9b1ad;
+  border: 1px solid var(--color-border);
   border-radius: 0.5rem;
 }
 button {
-  background: #176b5b;
+  background: var(--color-primary);
   color: white;
   border: 0;
   font-weight: 700;
@@ -48,7 +58,7 @@ button {
 }
 .link {
   background: transparent;
-  color: #176b5b;
+  color: var(--color-primary-dark);
 }
 .toolbar {
   display: flex;
@@ -66,7 +76,7 @@ button {
   gap: 0.5rem;
   padding: 1.5rem;
   background: white;
-  color: #17212b;
+  color: var(--color-text);
 }
 .editor-actions {
   display: flex;
@@ -95,7 +105,7 @@ button {
   min-height: 297mm;
   padding: 18mm;
   background: white;
-  box-shadow: 0 1rem 3rem #17212b18;
+  box-shadow: 0 1rem 3rem #17233b18;
   font-family: Arial, "Liberation Sans", sans-serif;
   font-size: 10pt;
   line-height: 1.45;
@@ -111,12 +121,12 @@ button {
 }
 .preview-header h3 {
   margin: 6pt 0;
-  color: #53635e;
+  color: var(--color-text-muted);
   font-size: 13pt;
   font-weight: 600;
 }
 .preview-contact {
-  color: #63716d;
+  color: var(--color-text-muted);
   font-size: 8.5pt;
 }
 .preview-summary {
@@ -159,7 +169,7 @@ button {
 }
 .preview-item-heading span,
 .preview-item-heading time {
-  color: #63716d;
+  color: var(--color-text-muted);
   font-size: 8.5pt;
 }
 .preview-item-heading time {
@@ -210,7 +220,7 @@ button {
 }
 .resume-form label {
   gap: 0.4rem;
-  color: #34443f;
+  color: #34435c;
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -220,9 +230,9 @@ button {
 .resume-form select {
   box-sizing: border-box;
   width: 100%;
-  border-color: #b8c0bc;
-  background: #fcfdfc;
-  color: #17212b;
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.45;
@@ -247,8 +257,8 @@ button {
 .resume-form textarea:focus,
 .resume-form select:focus {
   outline: 0;
-  border-color: #176b5b;
-  box-shadow: 0 0 0 3px #176b5b24;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px #2563eb24;
 }
 .section-builder {
   display: grid;
@@ -261,12 +271,12 @@ button {
   grid-template-columns: minmax(0, 1fr) minmax(11rem, 14rem);
   align-items: end;
   gap: 1rem;
-  border-top: 1px solid #dce2df;
+  border-top: 1px solid var(--color-divider);
   padding-top: 1.25rem;
 }
 .section-builder-heading h3 {
   margin: 0;
-  color: #17212b;
+  color: var(--color-text);
   font-size: 1.05rem;
 }
 .add-section {
@@ -280,13 +290,13 @@ button {
   gap: 1rem;
   margin: 0;
   padding: 1rem;
-  border: 1px solid #d6ddda;
+  border: 1px solid var(--color-divider);
   border-radius: 0.75rem;
-  background: #f8faf9;
+  background: var(--color-surface-subtle);
 }
 .resume-section legend {
   padding: 0 0.4rem;
-  color: #176b5b;
+  color: var(--color-primary-dark);
   font-size: 0.9rem;
   font-weight: 800;
 }
@@ -337,11 +347,11 @@ button {
   min-width: 0;
   gap: 0.75rem;
   padding-top: 1rem;
-  border-top: 1px solid #dce2df;
+  border-top: 1px solid var(--color-divider);
 }
 .item-heading {
   justify-content: space-between;
-  color: #53635e;
+  color: var(--color-text-muted);
   font-size: 0.8rem;
   text-transform: capitalize;
 }
@@ -359,8 +369,8 @@ button {
 }
 .secondary-button {
   justify-self: start;
-  background: #e3efeb;
-  color: #176b5b;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
 }
 @media (max-width: 520px) {
   .section-builder-heading,

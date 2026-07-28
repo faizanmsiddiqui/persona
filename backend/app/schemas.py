@@ -42,7 +42,7 @@ class Section(BaseModel):
 class Presentation(BaseModel):
     template: Literal["classic", "modern"] = "modern"
     font: Literal["sans", "serif"] = "sans"
-    accent: str = Field(default="#176b5b", pattern=r"^#[0-9a-fA-F]{6}$")
+    accent: str = Field(default="#2563eb", pattern=r"^#[0-9a-fA-F]{6}$")
     spacing: Literal["compact", "comfortable"] = "comfortable"
 
 
