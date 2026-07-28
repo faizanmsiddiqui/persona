@@ -57,6 +57,27 @@ export function Editor({
         </button>
         <span aria-live="polite">{state}</span>
       </div>
+      <button
+        onClick={async () => {
+          const response = await fetch(`/api/v1/resumes/${resume.id}/pdf`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "X-CSRF-Token": decodeURIComponent(
+                document.cookie.match(/(?:^|; )csrf_token=([^;]+)/)?.[1] ?? "",
+              ),
+            },
+          });
+          const url = URL.createObjectURL(await response.blob());
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "resume.pdf";
+          link.click();
+          URL.revokeObjectURL(url);
+        }}
+      >
+        Download PDF
+      </button>
       <div className="editor">
         <form className="card">
           <label>
