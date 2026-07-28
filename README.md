@@ -28,10 +28,6 @@ PostgreSQL database with Docker Compose which is the default way to run it.
 - Jinja2 and WeasyPrint
 - Docker Compose and Nginx
 
-```text
-GITHUB_TOKEN=ghp_hsd7yfankuowinkwusvnkj
-```
-
 ## Project Layout
 
 ```text
