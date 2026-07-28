@@ -77,6 +77,9 @@ button {
   cursor: not-allowed;
   opacity: 0.55;
 }
+.editor-toolbar {
+  margin-bottom: 1.5rem;
+}
 .editor {
   display: grid;
   grid-template-columns: minmax(18rem, 25rem) 1fr;

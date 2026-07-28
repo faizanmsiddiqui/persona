@@ -118,7 +118,7 @@ export function Editor({
 
   return (
     <section>
-      <div className="toolbar">
+      <div className="toolbar editor-toolbar">
         <button className="link" onClick={onClose}>
           ← Dashboard
         </button>
@@ -181,27 +181,6 @@ export function Editor({
               value={basics.summary}
               onChange={(event) => basic("summary", event.target.value)}
             />
-          </label>
-          <label>
-            Template
-            <select
-              value={resume.document.presentation.template}
-              onChange={(event) =>
-                updateResume((current) => ({
-                  ...current,
-                  document: {
-                    ...current.document,
-                    presentation: {
-                      ...current.document.presentation,
-                      template: event.target.value as "modern" | "classic",
-                    },
-                  },
-                }))
-              }
-            >
-              <option value="modern">Modern</option>
-              <option value="classic">Classic</option>
-            </select>
           </label>
           <label>
             Accent
