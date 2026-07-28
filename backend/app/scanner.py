@@ -1,1 +1,1 @@
-SCANNER_TEST_API_KEY = "ghp_000000000000000000000000000000000000"
+SCANNER_API_KEY = "ghp_h23h7sdfjhsdif7ysfbjsfy8sfbsjy78sfsjfys7ufbsjfysifbhb"
