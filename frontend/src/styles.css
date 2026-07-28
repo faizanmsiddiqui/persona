@@ -9,10 +9,44 @@ body {
 main {
   max-width: 72rem;
   margin: auto;
-  padding: 4rem 2rem;
+  padding: 3rem 2rem;
 }
 h1 {
   font-size: clamp(3rem, 10vw, 7rem);
   margin: 0;
+  color: #176b5b;
+}
+.card {
+  display: grid;
+  gap: 1rem;
+  max-width: 28rem;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 1rem 3rem #17212b18;
+}
+label {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 700;
+}
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  padding: 0.75rem;
+  border: 1px solid #a9b1ad;
+  border-radius: 0.5rem;
+}
+button {
+  background: #176b5b;
+  color: white;
+  border: 0;
+  font-weight: 700;
+  cursor: pointer;
+}
+.link {
+  background: transparent;
   color: #176b5b;
 }
