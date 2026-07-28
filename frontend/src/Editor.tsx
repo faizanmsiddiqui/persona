@@ -147,7 +147,7 @@ export function Editor({
         <p role="alert">The résumé could not be saved. Please try again.</p>
       )}
       <div className="editor">
-        <form className="card">
+        <form className="card resume-form">
           <label>
             Document title
             <input

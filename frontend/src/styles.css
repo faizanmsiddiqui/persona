@@ -82,7 +82,8 @@ button {
 }
 .editor {
   display: grid;
-  grid-template-columns: minmax(18rem, 25rem) 1fr;
+  grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr);
+  align-items: start;
   gap: 2rem;
 }
 .preview {
@@ -99,6 +100,9 @@ button {
   font-size: 2.5rem;
 }
 @media (max-width: 700px) {
+  main {
+    padding: 2rem 1rem;
+  }
   .editor {
     grid-template-columns: 1fr;
   }
@@ -114,4 +118,50 @@ button {
 }
 .section-row button {
   padding: 0.4rem;
+}
+.resume-form {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+.resume-form label {
+  gap: 0.4rem;
+  color: #34443f;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.resume-form input,
+.resume-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  border-color: #b8c0bc;
+  background: #fcfdfc;
+  color: #17212b;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.45;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.resume-form input {
+  min-height: 2.85rem;
+}
+.resume-form textarea {
+  min-height: 9rem;
+  resize: vertical;
+}
+.resume-form input[type="color"] {
+  height: 3rem;
+  padding: 0.3rem;
+  cursor: pointer;
+}
+.resume-form input:focus,
+.resume-form textarea:focus {
+  outline: 0;
+  border-color: #176b5b;
+  box-shadow: 0 0 0 3px #176b5b24;
 }
