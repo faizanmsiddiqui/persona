@@ -31,7 +31,7 @@ export function Dashboard({ onEdit }: { onEdit: (resume: Resume) => void }) {
             onClick={() => onEdit(resume)}
           >
             <strong>{resume.title}</strong>
-            <span>Version {resume.version}</span>
+            <span>Saved {new Date(resume.updated_at).toLocaleString()}</span>
           </button>
         ))}
       </div>

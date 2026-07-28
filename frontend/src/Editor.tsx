@@ -19,11 +19,11 @@ export function Editor({
       try {
         const saved = await api<Resume>(`/resumes/${resume.id}`, {
           method: "PATCH",
-          headers: { "If-Match": `"${resume.version}"` },
+          headers: { "If-Match": `"${resume.updated_at}"` },
           body: JSON.stringify({
             title: resume.title,
             document: resume.document,
-            version: resume.version,
+            updated_at: resume.updated_at,
           }),
         });
         setResume(saved);

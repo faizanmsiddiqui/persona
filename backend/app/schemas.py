@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Literal
 from uuid import UUID, uuid4
 
@@ -72,4 +73,4 @@ class ResumeCreate(BaseModel):
 class ResumeUpdate(BaseModel):
     title: str | None = Field(default=None, max_length=160)
     document: ResumeDocument
-    version: int = Field(ge=1)
+    updated_at: datetime

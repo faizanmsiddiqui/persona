@@ -19,3 +19,9 @@ def test_owned_hides_missing_or_foreign_resume() -> None:
 def test_public_sharing_routes_are_not_exposed() -> None:
     paths = app.openapi()["paths"]
     assert not any("/share" in path or "/public/resumes" in path for path in paths)
+
+
+def test_resume_updates_use_timestamp_concurrency() -> None:
+    properties = app.openapi()["components"]["schemas"]["ResumeUpdate"]["properties"]
+    assert properties["updated_at"]["format"] == "date-time"
+    assert "version" not in properties

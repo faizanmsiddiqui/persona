@@ -2,7 +2,7 @@ export type Resume = {
   id: string;
   title: string;
   document: ResumeDocument;
-  version: number;
+  updated_at: string;
 };
 export type ResumeDocument = {
   schema_version: 1;
