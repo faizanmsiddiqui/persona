@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AuthForm } from "./AuthForm";
 import { Dashboard } from "./Dashboard";
 import type { Resume } from "./types";
+import { Editor } from "./Editor";
 export function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [selected, setSelected] = useState<Resume | null>(null);
@@ -13,7 +14,7 @@ export function App() {
       </header>
       {authenticated ? (
         selected ? (
-          <pre>{selected.title}</pre>
+          <Editor initial={selected} onClose={() => setSelected(null)} />
         ) : (
           <Dashboard onEdit={setSelected} />
         )
