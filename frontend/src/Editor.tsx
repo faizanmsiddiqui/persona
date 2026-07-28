@@ -88,6 +88,46 @@ export function Editor({
               onChange={(e) => basic("summary", e.target.value)}
             />
           </label>
+          <label>
+            Template
+            <select
+              value={resume.document.presentation.template}
+              onChange={(e) =>
+                setResume({
+                  ...resume,
+                  document: {
+                    ...resume.document,
+                    presentation: {
+                      ...resume.document.presentation,
+                      template: e.target.value as "modern" | "classic",
+                    },
+                  },
+                })
+              }
+            >
+              <option value="modern">Modern</option>
+              <option value="classic">Classic</option>
+            </select>
+          </label>
+          <label>
+            Accent
+            <input
+              type="color"
+              value={resume.document.presentation.accent}
+              onChange={(e) =>
+                setResume({
+                  ...resume,
+                  document: {
+                    ...resume.document,
+                    presentation: {
+                      ...resume.document.presentation,
+                      accent: e.target.value,
+                    },
+                  },
+                })
+              }
+            />
+          </label>
           {resume.document.sections.map((section, index) => (
             <div className="section-row" key={section.id}>
               <span>{section.title}</span>
