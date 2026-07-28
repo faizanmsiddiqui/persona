@@ -69,7 +69,8 @@ def reorder_sections(resume_id: UUID, document: ResumeDocument, user: User = Dep
 @router.get("/resumes/{resume_id}/versions")
 def versions(resume_id: UUID, user: User = Depends(current_user), db: Session = Depends(get_db)) -> list[dict]:
     row = owned(db, resume_id, user)
-    return [{"id": str(v.id), "version": v.version, "created_at": v.created_at} for v in db.scalars(select(ResumeVersion).where(ResumeVersion.resume_id == row.id).order_by(ResumeVersion.version.desc()))]
+    query = select(ResumeVersion).where(ResumeVersion.resume_id == row.id).order_by(ResumeVersion.version.desc()).limit(50)
+    return [{"id": str(v.id), "version": v.version, "created_at": v.created_at} for v in db.scalars(query)]
 
 @router.post("/resumes/{resume_id}/versions/{version_id}/restore", dependencies=[Depends(require_csrf)])
 def restore(resume_id: UUID, version_id: UUID, user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
