@@ -56,6 +56,11 @@ class ResumeDocument(BaseModel):
         ids = [section.id for section in self.sections]
         if len(ids) != len(set(ids)):
             raise ValueError("section ids must be unique")
+        if sorted(section.order for section in self.sections) != list(range(len(self.sections))):
+            raise ValueError("section order must be contiguous")
+        for section in self.sections:
+            if sorted(item.order for item in section.items) != list(range(len(section.items))):
+                raise ValueError("item order must be contiguous")
         return self
 
 
