@@ -9,6 +9,7 @@ from ..db import get_db
 from ..dependencies import current_user, require_csrf
 from ..models import Resume, ResumeVersion, User
 from ..schemas import ResumeCreate, ResumeDocument, ResumeUpdate
+from ..rendering import render_html, render_pdf
 
 router = APIRouter(prefix="/api/v1", tags=["resumes"])
 
@@ -86,3 +87,13 @@ def templates() -> list[dict[str, str]]:
         {"id": "modern", "name": "Modern", "description": "Editorial layout with a strong accent"},
         {"id": "classic", "name": "Classic", "description": "Traditional single-column typography"},
     ]
+
+@router.get("/resumes/{resume_id}/preview", response_class=Response)
+def preview(resume_id: UUID, user: User = Depends(current_user), db: Session = Depends(get_db)) -> Response:
+    row = owned(db, resume_id, user)
+    return Response(render_html(row.document), media_type="text/html")
+
+@router.post("/resumes/{resume_id}/pdf", dependencies=[Depends(require_csrf)])
+def pdf(resume_id: UUID, user: User = Depends(current_user), db: Session = Depends(get_db)) -> Response:
+    row = owned(db, resume_id, user)
+    return Response(render_pdf(row.document), media_type="application/pdf", headers={"Content-Disposition": 'attachment; filename="resume.pdf"'})
