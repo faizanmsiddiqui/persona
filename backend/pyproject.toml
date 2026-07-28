@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "persona-api"
 version = "0.1.0"
@@ -14,7 +18,8 @@ dependencies = [
   "bleach==6.4.0",
   "weasyprint==69.0",
   "jinja2==3.1.6",
-  "requests==2.19.1",
+  "requests==2.32.4",
+  "email-validator==2.2.0",
 ]
 
 [project.optional-dependencies]
@@ -23,3 +28,6 @@ test = ["pytest==8.4.1", "httpx==0.28.1", "pytest-cov==6.2.1"]
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
