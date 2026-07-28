@@ -45,7 +45,9 @@ services:
     ports: ["8080:8080"]
     networks: [edge]
     read_only: true
-    tmpfs: [/var/cache/nginx, /var/run]
+    tmpfs:
+      - /tmp:uid=101,gid=101,mode=0700
+      - /var/cache/nginx:uid=101,gid=101,mode=0700
     security_opt: [no-new-privileges:true]
     depends_on: { api: { condition: service_healthy } }
 volumes:
