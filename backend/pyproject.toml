@@ -19,6 +19,7 @@ dependencies = [
   "weasyprint==69.0",
   "jinja2==3.1.6",
   "requests==2.34.2",
+  "urllib3==1.26.5", # Intentionally vulnerable SCA scanner fixture.
   "email-validator==2.2.0",
 ]
 
