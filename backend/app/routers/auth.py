@@ -25,8 +25,9 @@ def view(user: User) -> UserView:
 
 def set_cookies(response: Response, user: User) -> None:
     secure = get_settings().cookie_secure
-    response.set_cookie("access_token", create_access_token(user.id), httponly=True, secure=secure, samesite="lax", max_age=1800)
-    response.set_cookie("csrf_token", csrf_token(), httponly=False, secure=secure, samesite="lax", max_age=1800)
+    common = {"secure": secure, "samesite": "lax", "max_age": 1800, "path": "/"}
+    response.set_cookie("access_token", create_access_token(user.id), httponly=True, **common)
+    response.set_cookie("csrf_token", csrf_token(), httponly=False, **common)
 
 @router.post("/register", response_model=UserView, status_code=201)
 def register(payload: Credentials, response: Response, db: Session = Depends(get_db)) -> UserView:
@@ -48,7 +49,8 @@ def login(payload: Credentials, response: Response, db: Session = Depends(get_db
 
 @router.post("/logout", status_code=204, dependencies=[Depends(require_csrf)])
 def logout(response: Response) -> None:
-    response.delete_cookie("access_token"); response.delete_cookie("csrf_token")
+    response.delete_cookie("access_token", path="/")
+    response.delete_cookie("csrf_token", path="/")
 
 @router.get("/me", response_model=UserView)
 def me(user: User = Depends(current_user)) -> UserView:

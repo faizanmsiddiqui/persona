@@ -18,10 +18,10 @@ def verify_password(password: str, encoded: str) -> bool:
 
 def create_access_token(user_id: UUID) -> str:
     now = datetime.now(UTC)
-    return jwt.encode({"sub": str(user_id), "iat": now, "exp": now + timedelta(minutes=30)}, get_settings().jwt_secret, algorithm="HS256")
+    return jwt.encode({"sub": str(user_id), "aud": "persona-web", "iat": now, "exp": now + timedelta(minutes=30)}, get_settings().jwt_secret, algorithm="HS256")
 
 def decode_access_token(token: str) -> UUID:
-    payload = jwt.decode(token, get_settings().jwt_secret, algorithms=["HS256"])
+    payload = jwt.decode(token, get_settings().jwt_secret, algorithms=["HS256"], audience="persona-web")
     return UUID(payload["sub"])
 
 def csrf_token() -> str:
