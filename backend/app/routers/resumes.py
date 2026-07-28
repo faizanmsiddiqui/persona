@@ -10,6 +10,7 @@ from ..dependencies import current_user, require_csrf
 from ..models import Resume, ResumeVersion, User
 from ..schemas import ResumeCreate, ResumeDocument, ResumeUpdate
 from ..rendering import render_html, render_pdf
+from ..sanitization import sanitize_document
 
 router = APIRouter(prefix="/api/v1", tags=["resumes"])
 
@@ -44,7 +45,7 @@ def update_resume(resume_id: UUID, payload: ResumeUpdate, if_match: str | None =
         raise HTTPException(status.HTTP_409_CONFLICT, "Résumé changed in another session")
     db.add(ResumeVersion(resume_id=row.id, version=row.version, document=row.document))
     row.title = payload.title or row.title
-    row.document = payload.document.model_dump(mode="json")
+    row.document = sanitize_document(payload.document.model_dump(mode="json"))
     row.version += 1
     db.commit()
     return serialize(row)

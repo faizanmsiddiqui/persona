@@ -19,6 +19,14 @@ app.include_router(auth_router)
 app.include_router(profile_router)
 app.include_router(resumes_router)
 
+@app.middleware("http")
+async def security_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["Content-Security-Policy"] = "default-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; frame-ancestors 'none'"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    return response
+
 
 @app.get("/health/live", tags=["health"])
 def live() -> dict[str, str]:
