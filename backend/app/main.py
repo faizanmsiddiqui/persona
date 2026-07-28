@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
+from .routers.auth import router as auth_router
 
 settings = get_settings()
 app = FastAPI(title="Persona API", version="1.0.0")
@@ -12,6 +13,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
     allow_headers=["Content-Type", "X-CSRF-Token"],
 )
+app.include_router(auth_router)
 
 
 @app.get("/health/live", tags=["health"])
