@@ -82,4 +82,7 @@ def restore(resume_id: UUID, version_id: UUID, user: User = Depends(current_user
 
 @router.get("/templates")
 def templates() -> list[dict[str, str]]:
-    return [{"id": "modern", "name": "Modern"}, {"id": "classic", "name": "Classic"}]
+    return [
+        {"id": "modern", "name": "Modern", "description": "Editorial layout with a strong accent"},
+        {"id": "classic", "name": "Classic", "description": "Traditional single-column typography"},
+    ]
