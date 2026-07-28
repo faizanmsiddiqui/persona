@@ -29,7 +29,6 @@ jobs:
           version: "0.11.32"
           enable-cache: true
           cache-suffix: secorch-0.1.0
-      - run: uvx --from "secorch==0.1.0" secorch init --force
       - id: secorch
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
