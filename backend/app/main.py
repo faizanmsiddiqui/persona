@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .config import get_settings
 from .routers.auth import router as auth_router
@@ -8,6 +9,7 @@ from .routers.resumes import router as resumes_router
 
 settings = get_settings()
 app = FastAPI(title="Persona API", version="1.0.0")
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "api", "nginx", "testserver"])
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins,
@@ -21,6 +23,9 @@ app.include_router(resumes_router)
 
 @app.middleware("http")
 async def security_headers(request, call_next):
+    if request.headers.get("content-length") and int(request.headers["content-length"]) > 1_000_000:
+        from fastapi.responses import JSONResponse
+        return JSONResponse({"detail": "Request too large"}, status_code=413)
     response = await call_next(request)
     response.headers["Content-Security-Policy"] = "default-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; frame-ancestors 'none'"
     response.headers["X-Content-Type-Options"] = "nosniff"
