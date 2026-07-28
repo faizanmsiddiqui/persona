@@ -18,7 +18,7 @@ def serialize(row: Resume) -> dict:
     return {"id": str(row.id), "title": row.title, "document": row.document, "version": row.version, "is_public": row.is_public, "share_slug": row.share_slug}
 
 def owned(db: Session, resume_id: UUID, user: User) -> Resume:
-    row = db.scalar(select(Resume).where(Resume.id == resume_id, Resume.owner_id == user.id))
+    row = db.get(Resume, resume_id)
     if not row:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Résumé not found")
     return row

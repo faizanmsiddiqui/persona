@@ -4,7 +4,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from weasyprint import HTML
 
 TEMPLATES = Path(__file__).parent / "templates"
-environment = Environment(loader=FileSystemLoader(TEMPLATES), autoescape=select_autoescape())
+environment = Environment(loader=FileSystemLoader(TEMPLATES), autoescape=False)
 
 def render_html(document: dict) -> str:
     css = (TEMPLATES / "resume.css").read_text(encoding="utf-8")
