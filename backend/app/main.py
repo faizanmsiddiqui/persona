@@ -1,8 +1,11 @@
-from fastapi import FastAPI
 import logging
 import time
 import uuid
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from sqlalchemy.exc import OperationalError
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from .config import get_settings
@@ -26,12 +29,21 @@ app.include_router(auth_router)
 app.include_router(profile_router)
 app.include_router(resumes_router)
 
+
+@app.exception_handler(OperationalError)
+async def database_unavailable(_: Request, error: OperationalError) -> JSONResponse:
+    logger.error("database_unavailable", extra={"error_type": type(error.orig).__name__})
+    return JSONResponse(
+        status_code=503,
+        content={"detail": "Database is temporarily unavailable"},
+    )
+
+
 @app.middleware("http")
 async def security_headers(request, call_next):
     request_id = str(uuid.uuid4())
     started = time.monotonic()
     if request.headers.get("content-length") and int(request.headers["content-length"]) > 1_000_000:
-        from fastapi.responses import JSONResponse
         return JSONResponse({"detail": "Request too large"}, status_code=413)
     response = await call_next(request)
     response.headers["X-Request-ID"] = request_id

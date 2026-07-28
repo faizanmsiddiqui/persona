@@ -20,6 +20,9 @@ services:
         retries: 10,
       }
   api:
+    environment:
+      COOKIE_SECURE: "false"
+      ALLOWED_ORIGINS: '["http://localhost:8080"]'
     build: ./backend
     secrets: [jwt_secret, database_url]
     networks: [data, edge]
@@ -27,19 +30,6 @@ services:
     tmpfs: [/tmp]
     security_opt: [no-new-privileges:true]
     depends_on: { db: { condition: service_healthy } }
-    healthcheck:
-      {
-        test:
-          [
-            "CMD",
-            "python",
-            "-c",
-            "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready')",
-          ],
-        interval: 5s,
-        timeout: 3s,
-        retries: 12,
-      }
   web:
     build: ./frontend
     ports: ["8080:8080"]
@@ -47,7 +37,7 @@ services:
     read_only: true
     tmpfs: [/var/cache/nginx, /var/run]
     security_opt: [no-new-privileges:true]
-    depends_on: { api: { condition: service_healthy } }
+    depends_on: { api: { condition: service_started } }
 volumes:
   persona-db:
 networks:
