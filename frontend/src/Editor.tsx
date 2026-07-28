@@ -12,9 +12,6 @@ export function Editor({
 }) {
   const [resume, setResume] = useState(initial);
   const [state, setState] = useState<"saved" | "saving" | "conflict">("saved");
-  const [shareUrl, setShareUrl] = useState(
-    initial.share_slug ? `${location.origin}/share/${initial.share_slug}` : "",
-  );
   useEffect(() => {
     if (resume === initial) return;
     const timer = window.setTimeout(async () => {
@@ -83,18 +80,6 @@ export function Editor({
         >
           Download PDF
         </button>
-        <button
-          onClick={async () => {
-            const result = await api<{ share_slug: string }>(
-              `/resumes/${resume.id}/share`,
-              { method: "POST" },
-            );
-            setShareUrl(`${location.origin}/share/${result.share_slug}`);
-          }}
-        >
-          Share
-        </button>
-        {shareUrl && <output>{shareUrl}</output>}
       </div>
       <div className="editor">
         <form className="card">

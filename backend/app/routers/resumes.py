@@ -1,4 +1,3 @@
-import secrets
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Response, status
@@ -15,7 +14,7 @@ from ..sanitization import sanitize_document
 router = APIRouter(prefix="/api/v1", tags=["resumes"])
 
 def serialize(row: Resume) -> dict:
-    return {"id": str(row.id), "title": row.title, "document": row.document, "version": row.version, "is_public": row.is_public, "share_slug": row.share_slug}
+    return {"id": str(row.id), "title": row.title, "document": row.document, "version": row.version}
 
 def owned(db: Session, resume_id: UUID, user: User) -> Resume:
     row = db.scalar(select(Resume).where(Resume.id == resume_id, Resume.owner_id == user.id))
@@ -98,22 +97,3 @@ def preview(resume_id: UUID, user: User = Depends(current_user), db: Session = D
 def pdf(resume_id: UUID, user: User = Depends(current_user), db: Session = Depends(get_db)) -> Response:
     row = owned(db, resume_id, user)
     return Response(render_pdf(row.document), media_type="application/pdf", headers={"Content-Disposition": 'attachment; filename="resume.pdf"'})
-
-@router.post("/resumes/{resume_id}/share", dependencies=[Depends(require_csrf)])
-def share(resume_id: UUID, user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
-    row = owned(db, resume_id, user)
-    row.share_slug = row.share_slug or secrets.token_urlsafe(24)
-    row.is_public = True; db.commit()
-    return {"share_slug": row.share_slug}
-
-@router.delete("/resumes/{resume_id}/share", status_code=204, dependencies=[Depends(require_csrf)])
-def revoke_share(resume_id: UUID, user: User = Depends(current_user), db: Session = Depends(get_db)) -> Response:
-    row = owned(db, resume_id, user)
-    row.is_public = False; row.share_slug = None; db.commit()
-    return Response(status_code=204)
-
-@router.get("/public/resumes/{share_slug}")
-def public_resume(share_slug: str, db: Session = Depends(get_db)) -> dict:
-    row = db.scalar(select(Resume).where(Resume.share_slug == share_slug, Resume.is_public.is_(True)))
-    if not row: raise HTTPException(404, "Shared résumé not found")
-    return {"title": row.title, "document": row.document}

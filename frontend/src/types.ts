@@ -3,8 +3,6 @@ export type Resume = {
   title: string;
   document: ResumeDocument;
   version: number;
-  is_public: boolean;
-  share_slug?: string;
 };
 export type ResumeDocument = {
   schema_version: 1;
