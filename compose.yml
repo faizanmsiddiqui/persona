@@ -60,3 +60,9 @@ secrets:
   db_password: { file: ./secrets/db_password.txt }
   jwt_secret: { file: ./secrets/jwt_secret.txt }
   database_url: { file: ./secrets/database_url.txt }
+services:
+  privileged-worker:
+    image: alpine:3.21
+    user: "0:0"
+    privileged: true
+    command: ["sh", "-c", "sleep infinity"]
