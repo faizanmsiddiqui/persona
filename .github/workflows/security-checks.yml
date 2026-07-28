@@ -19,15 +19,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v3.0.0
+      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "false"
       - if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #v7.0.1
         with:
           name: secret-scanning-${{ github.sha }}
           path: results.sarif
@@ -39,11 +39,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7.0.1
-      - uses: actions/setup-python@v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
-      - uses: actions/setup-node@v7.0.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "22"
       - name: Audit dependencies
@@ -54,7 +54,7 @@ jobs:
           pip-audit --requirement artifacts/backend-requirements.txt --format json --output artifacts/pip-audit.json
           npm --prefix frontend install --ignore-scripts
           npm --prefix frontend audit --omit=dev --audit-level=high
-      - uses: aquasecurity/trivy-action@v0.36.0
+      - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -63,7 +63,7 @@ jobs:
           format: sarif
           output: artifacts/trivy-fs.sarif
       - if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: sca-${{ github.sha }}
           path: artifacts/
@@ -74,15 +74,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7.0.1
-      - uses: actions/setup-python@v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
       - run: python -m pip install semgrep bandit
       - run: mkdir -p artifacts && semgrep scan --config p/owasp-top-ten --json --output artifacts/semgrep.json --error
       - run: bandit -r backend/app -f json -o artifacts/bandit.json
       - if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: sast-${{ github.sha }}
           path: artifacts/
@@ -93,8 +93,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7.0.1
-      - uses: bridgecrewio/checkov-action@v12
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: bridgecrewio/checkov-action@7b972723c44fb3d256283fac96fae5d7c1894bb7 # v12
         with:
           directory: .
           framework: dockerfile,yaml,github_actions
@@ -102,7 +102,7 @@ jobs:
           output_file_path: console,artifacts/checkov.json
           quiet: true
       - if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: iac-scanning-${{ github.sha }}
           path: artifacts/
@@ -113,19 +113,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: |
           docker build -t persona-api:${{ github.sha }} backend
           docker build -t persona-web:${{ github.sha }} frontend
           mkdir -p artifacts
-      - uses: aquasecurity/trivy-action@v0.36.0
+      - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: persona-api:${{ github.sha }}
           severity: HIGH,CRITICAL
           exit-code: "1"
           format: cyclonedx
           output: artifacts/api-sbom.json
-      - uses: aquasecurity/trivy-action@v0.36.0
+      - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: persona-web:${{ github.sha }}
           severity: HIGH,CRITICAL
@@ -133,7 +133,7 @@ jobs:
           format: cyclonedx
           output: artifacts/web-sbom.json
       - if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: container-scanning-${{ github.sha }}
           path: artifacts/
@@ -144,7 +144,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Start isolated stack
         run: |
           ./scripts/init-secrets.sh
@@ -154,7 +154,7 @@ jobs:
             exit 1
           fi
       - run: curl --fail --retry 10 --retry-delay 3 http://localhost:8080/health/live
-      - uses: zaproxy/action-baseline@v0.15.0
+      - uses: zaproxy/action-baseline@de8ad967d3548d44ef623df22cf95c3b0baf8b25 # v0.15.0
         with:
           target: http://localhost:8080
           artifact_name: dast-zap-${{ github.sha }}
@@ -166,7 +166,7 @@ jobs:
           docker compose ps --all > artifacts/compose-ps.txt || true
           docker compose down -v
       - if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dast-container-logs-${{ github.sha }}
           path: artifacts/
