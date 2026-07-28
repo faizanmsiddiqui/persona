@@ -22,3 +22,5 @@ def test_rendering_separates_contact_details() -> None:
     }
     html = render_html(document)
     assert "ada@example.com | +44 123 | London" in html
+    assert 'font-family: Arial, "Liberation Sans", sans-serif' in html
+    assert "&#34;Liberation Sans&#34;" not in html

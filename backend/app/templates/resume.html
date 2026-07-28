@@ -3,32 +3,50 @@
   <head>
     <meta charset="utf-8" />
     <style>
-      {{ css }}
+      {{ css | safe }}
     </style>
     <style>
-      :root{--accent:{{ accent }}}
+      :root { --accent: {{ accent }}; }
     </style>
   </head>
   <body>
-    <header>
+    <header class="preview-header">
       <h1>{{ basics.name }}</h1>
-      <p class="headline">{{ basics.headline }}</p>
-      <p>
+      {% if basics.headline %}
+      <h2>{{ basics.headline }}</h2>
+      {% endif %}
+      <div class="preview-contact">
         {% if basics.email %}{{ basics.email }}{% endif %}{% if basics.email and
         basics.phone %} | {% endif %}{% if basics.phone %}{{ basics.phone }}{%
         endif %}{% if (basics.email or basics.phone) and basics.location %} | {%
         endif %}{% if basics.location %}{{ basics.location }}{% endif %}
-      </p>
-      <p>{{ basics.summary }}</p>
+      </div>
+      {% if basics.summary %}
+      <p class="preview-summary">{{ basics.summary }}</p>
+      {% endif %}
     </header>
+
     {% for section in sections %}
-    <section class="section">
-      <h2>{{ section.title }}</h2>
-      {% for item in section["items"] %}
-      <article>
-        <strong>{{ item.title }}</strong> {{ item.subtitle }}
+    <section class="preview-section">
+      <h3>{{ section.title }}</h3>
+      {% for item in section["items"] | sort(attribute="order") %}
+      <div class="preview-item">
+        <div class="preview-item-heading">
+          <div>
+            {% if item.title %}<strong>{{ item.title }}</strong>{% endif %} {%
+            if item.subtitle %}<span>{{ item.subtitle }}</span>{% endif %}
+          </div>
+          {% if item.start_date or item.end_date %}
+          <time
+            >{{ item.start_date }}{% if item.start_date and item.end_date %} –
+            {% endif %}{{ item.end_date }}</time
+          >
+          {% endif %}
+        </div>
+        {% if item.description %}
         <p>{{ item.description }}</p>
-      </article>
+        {% endif %}
+      </div>
       {% endfor %}
     </section>
     {% endfor %}

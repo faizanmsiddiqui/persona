@@ -7,7 +7,7 @@ body {
   margin: 0;
 }
 main {
-  max-width: 72rem;
+  max-width: 86rem;
   margin: auto;
   padding: 3rem 2rem;
 }
@@ -82,17 +82,23 @@ button {
 }
 .editor {
   display: grid;
-  grid-template-columns: minmax(25rem, 31rem) minmax(0, 1fr);
+  grid-template-columns: minmax(25rem, 31rem) minmax(0, 210mm);
   align-items: start;
+  justify-content: center;
   gap: 2rem;
 }
 .preview {
   box-sizing: border-box;
+  width: 210mm;
+  max-width: 100%;
   min-width: 0;
-  min-height: 50rem;
-  padding: 3.5rem;
+  min-height: 297mm;
+  padding: 18mm;
   background: white;
   box-shadow: 0 1rem 3rem #17212b18;
+  font-family: Arial, "Liberation Sans", sans-serif;
+  font-size: 10pt;
+  line-height: 1.45;
 }
 .preview h2,
 .preview h4 {
@@ -100,40 +106,39 @@ button {
 }
 .preview h2 {
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 30pt;
   line-height: 1.1;
 }
 .preview-header h3 {
-  margin: 0.5rem 0;
+  margin: 6pt 0;
   color: #53635e;
-  font-size: 1.1rem;
+  font-size: 13pt;
   font-weight: 600;
 }
 .preview-contact {
-  display: flex;
-  flex-wrap: wrap;
   color: #63716d;
-  font-size: 0.85rem;
+  font-size: 8.5pt;
 }
 .preview-summary {
-  margin: 1.25rem 0 0;
+  margin: 15pt 0 0;
   white-space: pre-wrap;
 }
 .preview-section {
-  margin-top: 1.75rem;
+  margin-top: 21pt;
 }
 .preview-section h4 {
-  margin: 0 0 0.8rem;
-  padding-bottom: 0.35rem;
+  margin: 0 0 9.5pt;
+  padding-bottom: 4pt;
   border-bottom: 2px solid var(--accent);
-  font-size: 1rem;
+  font-size: 10pt;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 .preview-item {
   display: grid;
-  gap: 0.35rem;
-  margin-top: 1rem;
+  gap: 4pt;
+  margin-top: 12pt;
+  break-inside: avoid;
 }
 .preview-item:first-of-type {
   margin-top: 0;
@@ -142,20 +147,20 @@ button {
   display: flex;
   align-items: start;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 12pt;
 }
 .preview-item-heading > div {
   display: grid;
-  gap: 0.15rem;
+  gap: 2pt;
   min-width: 0;
 }
 .preview-item-heading strong {
-  font-size: 1rem;
+  font-size: 10pt;
 }
 .preview-item-heading span,
 .preview-item-heading time {
   color: #63716d;
-  font-size: 0.85rem;
+  font-size: 8.5pt;
 }
 .preview-item-heading time {
   flex: none;
@@ -174,6 +179,8 @@ button {
     grid-template-columns: 1fr;
   }
   .preview {
+    width: 100%;
+    min-height: 0;
     padding: 2rem;
   }
 }
