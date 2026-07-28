@@ -112,7 +112,6 @@ button {
 .preview-contact {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem 1rem;
   color: #63716d;
   font-size: 0.85rem;
 }

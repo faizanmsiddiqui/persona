@@ -2,6 +2,9 @@ import type { ResumeDocument } from "./types";
 
 export function Preview({ document }: { document: ResumeDocument }) {
   const { basics, sections, presentation } = document;
+  const contactDetails = [basics.email, basics.phone, basics.location].filter(
+    Boolean,
+  );
   return (
     <article
       className={`preview ${presentation.template}`}
@@ -10,11 +13,7 @@ export function Preview({ document }: { document: ResumeDocument }) {
       <header className="preview-header">
         <h2>{basics.name || "Your name"}</h2>
         {basics.headline && <h3>{basics.headline}</h3>}
-        <div className="preview-contact">
-          {basics.email && <span>{basics.email}</span>}
-          {basics.phone && <span>{basics.phone}</span>}
-          {basics.location && <span>{basics.location}</span>}
-        </div>
+        <div className="preview-contact">{contactDetails.join(" | ")}</div>
         {basics.summary && <p className="preview-summary">{basics.summary}</p>}
       </header>
       {[...sections]
