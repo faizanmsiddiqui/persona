@@ -1,0 +1,29 @@
+@page {
+  size: A4;
+  margin: 18mm;
+}
+body {
+  font-family:
+    DejaVu Sans,
+    sans-serif;
+  color: #17212b;
+  font-size: 10pt;
+  line-height: 1.45;
+}
+h1,
+h2 {
+  color: var(--accent);
+}
+h1 {
+  font-size: 28pt;
+  margin-bottom: 0;
+}
+.headline {
+  font-size: 13pt;
+}
+.section {
+  break-inside: avoid;
+}
+a {
+  color: inherit;
+}
