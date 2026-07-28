@@ -1,7 +1,7 @@
 import secrets
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Response, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -36,9 +36,10 @@ def get_resume(resume_id: UUID, user: User = Depends(current_user), db: Session 
     return serialize(owned(db, resume_id, user))
 
 @router.patch("/resumes/{resume_id}", dependencies=[Depends(require_csrf)])
-def update_resume(resume_id: UUID, payload: ResumeUpdate, user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
+def update_resume(resume_id: UUID, payload: ResumeUpdate, if_match: str | None = Header(default=None), user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
     row = owned(db, resume_id, user)
-    if row.version != payload.version:
+    supplied_version = int(if_match.strip('"')) if if_match else payload.version
+    if row.version != supplied_version:
         raise HTTPException(status.HTTP_409_CONFLICT, "Résumé changed in another session")
     db.add(ResumeVersion(resume_id=row.id, version=row.version, document=row.document))
     row.title = payload.title or row.title
