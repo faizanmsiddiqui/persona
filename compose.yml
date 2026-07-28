@@ -9,6 +9,9 @@ services:
     secrets: [db_password]
     volumes: [persona-db:/var/lib/postgresql/data]
     networks: [data]
+    read_only: true
+    tmpfs: [/tmp, /run/postgresql]
+    security_opt: [no-new-privileges:true]
     healthcheck:
       {
         test: ["CMD-SHELL", "pg_isready -U persona"],
@@ -18,16 +21,19 @@ services:
       }
   api:
     build: ./backend
-    environment:
-      DATABASE_URL: postgresql+psycopg://persona:persona@db/persona
-      JWT_SECRET_FILE: /run/secrets/jwt_secret
-    secrets: [jwt_secret]
+    secrets: [jwt_secret, database_url]
     networks: [data, edge]
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
     depends_on: { db: { condition: service_healthy } }
   web:
     build: ./frontend
     ports: ["8080:8080"]
     networks: [edge]
+    read_only: true
+    tmpfs: [/var/cache/nginx, /var/run]
+    security_opt: [no-new-privileges:true]
     depends_on: { api: { condition: service_started } }
 volumes:
   persona-db:
@@ -38,3 +44,4 @@ networks:
 secrets:
   db_password: { file: ./secrets/db_password.txt }
   jwt_secret: { file: ./secrets/jwt_secret.txt }
+  database_url: { file: ./secrets/database_url.txt }
