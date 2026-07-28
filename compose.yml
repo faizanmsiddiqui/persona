@@ -1,0 +1,40 @@
+name: persona
+services:
+  db:
+    image: postgres:17.5-alpine3.21
+    environment:
+      POSTGRES_DB: persona
+      POSTGRES_USER: persona
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets: [db_password]
+    volumes: [persona-db:/var/lib/postgresql/data]
+    networks: [data]
+    healthcheck:
+      {
+        test: ["CMD-SHELL", "pg_isready -U persona"],
+        interval: 5s,
+        timeout: 3s,
+        retries: 10,
+      }
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://persona:persona@db/persona
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+    secrets: [jwt_secret]
+    networks: [data, edge]
+    depends_on: { db: { condition: service_healthy } }
+  web:
+    build: ./frontend
+    ports: ["8080:8080"]
+    networks: [edge]
+    depends_on: { api: { condition: service_started } }
+volumes:
+  persona-db:
+networks:
+  edge:
+  data:
+    internal: true
+secrets:
+  db_password: { file: ./secrets/db_password.txt }
+  jwt_secret: { file: ./secrets/jwt_secret.txt }
