@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { AuthForm } from "./AuthForm";
+import { Dashboard } from "./Dashboard";
+import type { Resume } from "./types";
 export function App() {
   const [authenticated, setAuthenticated] = useState(false);
+  const [selected, setSelected] = useState<Resume | null>(null);
   return (
     <main>
       <header>
@@ -9,7 +12,11 @@ export function App() {
         <p>Build a résumé that sounds like you.</p>
       </header>
       {authenticated ? (
-        <p>Signed in.</p>
+        selected ? (
+          <pre>{selected.title}</pre>
+        ) : (
+          <Dashboard onEdit={setSelected} />
+        )
       ) : (
         <AuthForm onAuthenticated={() => setAuthenticated(true)} />
       )}

@@ -50,3 +50,21 @@ button {
   background: transparent;
   color: #176b5b;
 }
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+}
+.resume-card {
+  display: grid;
+  text-align: left;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background: white;
+  color: #17212b;
+}
