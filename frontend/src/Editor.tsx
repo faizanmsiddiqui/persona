@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "./api";
 import type { Resume } from "./types";
+import { Preview } from "./Preview";
 
 export function Editor({
   initial,
@@ -99,11 +100,7 @@ export function Editor({
             </div>
           ))}
         </form>
-        <article className="preview">
-          <h2>{basics.name || "Your name"}</h2>
-          <h3>{basics.headline}</h3>
-          <p>{basics.summary}</p>
-        </article>
+        <Preview document={resume.document} />
       </div>
     </section>
   );

@@ -79,9 +79,12 @@ button {
   background: white;
   box-shadow: 0 1rem 3rem #17212b18;
 }
+.preview h2,
+.preview h4 {
+  color: var(--accent);
+}
 .preview h2 {
   font-size: 2.5rem;
-  color: #176b5b;
 }
 @media (max-width: 700px) {
   .editor {
