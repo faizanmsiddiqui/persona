@@ -7,7 +7,7 @@ RUN python -m venv /opt/venv && /opt/venv/bin/pip install .
 
 FROM python:3.12.10-slim-bookworm
 ENV PATH=/opt/venv/bin:$PATH PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
-RUN apt-get update && apt-get install -y --no-install-recommends fonts-liberation2 libharfbuzz-subset0 libpango-1.0-0 libpangoft2-1.0-0 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends fonts-liberation2 libharfbuzz-subset0 libpango-1.0-0 libpangoft2-1.0-0 libxml2-utils && rm -rf /var/lib/apt/lists/*
 RUN groupadd --system persona && useradd --system --gid persona --home /app persona
 COPY --from=builder /opt/venv /opt/venv
 WORKDIR /app
