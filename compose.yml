@@ -9,7 +9,6 @@ services:
     secrets: [db_password]
     volumes: [persona-db:/var/lib/postgresql/data]
     networks: [data]
-    ports: ["0.0.0.0:5432:5432"]
     read_only: true
     tmpfs: [/tmp, /run/postgresql]
     security_opt: [no-new-privileges:true]
