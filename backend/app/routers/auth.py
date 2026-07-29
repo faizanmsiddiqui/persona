@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from ..config import get_settings
 from ..db import get_db
-from ..dependencies import current_user, require_csrf
+from ..dependencies import current_user, require_logout_csrf
 from ..models import User
 from ..security import create_access_token, csrf_token, hash_password, verify_password
 
@@ -47,7 +47,7 @@ def login(payload: Credentials, response: Response, db: Session = Depends(get_db
     set_cookies(response, user)
     return view(user)
 
-@router.post("/logout", status_code=204, dependencies=[Depends(require_csrf)])
+@router.post("/logout", status_code=204, dependencies=[Depends(require_logout_csrf)])
 def logout(response: Response) -> None:
     response.delete_cookie("access_token", path="/")
     response.delete_cookie("csrf_token", path="/")

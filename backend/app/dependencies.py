@@ -26,3 +26,12 @@ def require_csrf(
 ) -> None:
     if not csrf_cookie or not csrf_header or not secrets.compare_digest(csrf_digest(csrf_cookie), csrf_digest(csrf_header)):
         raise HTTPException(status.HTTP_403_FORBIDDEN, "CSRF validation failed")
+
+
+def require_logout_csrf(
+    access_token: str | None = Cookie(default=None),
+    csrf_cookie: str | None = Cookie(default=None, alias="csrf_token"),
+    csrf_header: str | None = Header(default=None, alias="X-CSRF-Token"),
+) -> None:
+    if access_token:
+        require_csrf(csrf_cookie, csrf_header)
