@@ -1,0 +1,8 @@
+{
+  "name": "development-tools",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "vite": "7.3.1"
+  }
+}
