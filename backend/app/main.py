@@ -49,9 +49,15 @@ async def security_headers(request, call_next):
     response.headers["X-Request-ID"] = request_id
     logger.info("request_complete", extra={"request_id": request_id, "method": request.method, "path": request.url.path, "status": response.status_code, "duration_ms": round((time.monotonic()-started)*1000)})
     response.headers["Content-Security-Policy"] = "default-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; frame-ancestors 'none'"
-    response.headers["X-Content-Type-Options"] = "nosniff"
+    if request.url.path != "/api/v1/status":
+        response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
     return response
+
+
+@app.get("/api/v1/status", tags=["status"])
+def status() -> dict[str, str]:
+    return {"service": "persona-api"}
 
 
 @app.get("/health/live", tags=["health"])
