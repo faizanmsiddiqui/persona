@@ -7,6 +7,7 @@ export type IconName =
   | "download"
   | "edit"
   | "log-in"
+  | "log-out"
   | "moon"
   | "plus"
   | "save"
@@ -42,6 +43,13 @@ export function Icon({ name }: { name: IconName }) {
         <path d="M10 17l5-5-5-5" />
         <path d="M15 12H3" />
         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+      </>
+    ),
+    "log-out": (
+      <>
+        <path d="m14 7 5 5-5 5" />
+        <path d="M19 12H7" />
+        <path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4" />
       </>
     ),
     moon: <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" />,
