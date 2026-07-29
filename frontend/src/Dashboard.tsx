@@ -1,9 +1,16 @@
+import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "./api";
 import type { Resume } from "./types";
 
+export function withoutResume(resumes: Resume[], resumeId: string): Resume[] {
+  return resumes.filter((resume) => resume.id !== resumeId);
+}
+
 export function Dashboard({ onEdit }: { onEdit: (resume: Resume) => void }) {
   const cache = useQueryClient();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState("");
   const resumes = useQuery({
     queryKey: ["resumes"],
     queryFn: () => api<Resume[]>("/resumes"),
@@ -16,6 +23,29 @@ export function Dashboard({ onEdit }: { onEdit: (resume: Resume) => void }) {
     await cache.invalidateQueries({ queryKey: ["resumes"] });
     onEdit(resume);
   }
+  async function deleteResume(resume: Resume) {
+    if (
+      !window.confirm(
+        `Delete “${resume.title}”? This action cannot be undone.`,
+      )
+    )
+      return;
+
+    setDeleteError("");
+    setDeletingId(resume.id);
+    try {
+      await api<void>(`/resumes/${resume.id}`, { method: "DELETE" });
+      cache.setQueryData<Resume[]>(["resumes"], (current) =>
+        current ? withoutResume(current, resume.id) : current,
+      );
+    } catch (reason) {
+      setDeleteError(
+        reason instanceof Error ? reason.message : "Unable to delete résumé",
+      );
+    } finally {
+      setDeletingId(null);
+    }
+  }
   return (
     <section>
       <div className="toolbar">
@@ -23,16 +53,26 @@ export function Dashboard({ onEdit }: { onEdit: (resume: Resume) => void }) {
         <button onClick={create}>New résumé</button>
       </div>
       {resumes.isLoading && <p>Loading…</p>}
+      {deleteError && <p role="alert">{deleteError}</p>}
       <div className="grid">
         {resumes.data?.map((resume) => (
-          <button
-            className="resume-card"
-            key={resume.id}
-            onClick={() => onEdit(resume)}
-          >
-            <strong>{resume.title}</strong>
-            <span>Saved {new Date(resume.updated_at).toLocaleString()}</span>
-          </button>
+          <article className="resume-card" key={resume.id}>
+            <button
+              className="resume-card-open"
+              disabled={deletingId === resume.id}
+              onClick={() => onEdit(resume)}
+            >
+              <strong>{resume.title}</strong>
+              <span>Saved {new Date(resume.updated_at).toLocaleString()}</span>
+            </button>
+            <button
+              className="delete-resume-button"
+              disabled={deletingId === resume.id}
+              onClick={() => deleteResume(resume)}
+            >
+              {deletingId === resume.id ? "Deleting…" : "Delete"}
+            </button>
+          </article>
         ))}
       </div>
     </section>
