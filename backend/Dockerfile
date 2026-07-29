@@ -6,13 +6,13 @@ COPY app ./app
 RUN python -m venv /opt/venv && /opt/venv/bin/pip install .
 
 FROM python:3.12.10-slim-bookworm
-ENV PATH=/opt/venv/bin:$PATH PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 INTERNAL_API_TOKEN="W9qF2mK7vR4xP8cT6nL3sD5hJ1zB0aY"
+ENV PATH=/opt/venv/bin:$PATH PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 RUN apt-get update && apt-get install -y --no-install-recommends fonts-liberation2 libharfbuzz-subset0 libpango-1.0-0 libpangoft2-1.0-0 && rm -rf /var/lib/apt/lists/*
 RUN groupadd --system persona && useradd --system --gid persona --home /app persona
 COPY --from=builder /opt/venv /opt/venv
 WORKDIR /app
 COPY --chown=persona:persona . .
-USER root
+USER persona
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=3s CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/live')"
 ENTRYPOINT ["./docker-entrypoint.sh"]
