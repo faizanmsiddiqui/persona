@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "./api";
+import { Icon } from "./Icon";
 
 type Credentials = { email: string; password: string };
 export function AuthForm({ onAuthenticated }: { onAuthenticated: () => void }) {
@@ -41,12 +42,16 @@ export function AuthForm({ onAuthenticated }: { onAuthenticated: () => void }) {
         />
       </label>
       {error && <p role="alert">{error}</p>}
-      <button type="submit">Continue</button>
+      <button type="submit">
+        <Icon name={mode === "login" ? "log-in" : "user-plus"} />
+        Continue
+      </button>
       <button
         type="button"
         className="link"
         onClick={() => setMode(mode === "login" ? "register" : "login")}
       >
+        <Icon name={mode === "login" ? "user-plus" : "log-in"} />
         {mode === "login" ? "Create account" : "Use existing account"}
       </button>
     </form>

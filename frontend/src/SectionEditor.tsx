@@ -1,4 +1,5 @@
 import type { Section, SectionItem, SectionKind } from "./types";
+import { Icon } from "./Icon";
 
 type SectionDefinition = {
   kind: SectionKind;
@@ -214,7 +215,7 @@ export function SectionEditor({
                   onClick={() => onMove(sectionIndex, -1)}
                   aria-label={`Move ${section.title} up`}
                 >
-                  ↑
+                  <Icon name="chevron-up" />
                 </button>
                 <button
                   type="button"
@@ -222,13 +223,14 @@ export function SectionEditor({
                   onClick={() => onMove(sectionIndex, 1)}
                   aria-label={`Move ${section.title} down`}
                 >
-                  ↓
+                  <Icon name="chevron-down" />
                 </button>
                 <button
                   type="button"
                   className="danger-button"
                   onClick={() => removeSection(section.id)}
                 >
+                  <Icon name="trash" />
                   Remove
                 </button>
               </div>
@@ -245,6 +247,7 @@ export function SectionEditor({
                     className="text-button"
                     onClick={() => removeItem(section, item.id)}
                   >
+                    <Icon name="trash" />
                     Remove
                   </button>
                 </div>
@@ -321,6 +324,7 @@ export function SectionEditor({
                 })
               }
             >
+              <Icon name="plus" />
               Add {definition.itemLabel}
             </button>
           </fieldset>

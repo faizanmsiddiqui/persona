@@ -82,11 +82,20 @@ button {
   border-radius: 0.5rem;
 }
 button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
   background: var(--color-primary);
   color: white;
   border: 0;
   font-weight: 700;
   cursor: pointer;
+}
+.icon {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
 }
 .link {
   background: transparent;
@@ -126,6 +135,7 @@ button {
 }
 .resume-card-open {
   display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   min-width: 0;
   gap: 0.5rem;
   padding: 0;
@@ -133,6 +143,14 @@ button {
   background: transparent;
   color: var(--color-text);
   text-align: left;
+}
+.resume-card-open strong,
+.resume-card-open span {
+  grid-column: 2;
+}
+.resume-card-open .icon {
+  grid-row: 1 / span 2;
+  align-self: center;
 }
 .resume-card-open span {
   color: var(--color-text-muted);

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "./api";
+import { Icon } from "./Icon";
 import type { Resume } from "./types";
 
 export function withoutResume(resumes: Resume[], resumeId: string): Resume[] {
@@ -25,9 +26,7 @@ export function Dashboard({ onEdit }: { onEdit: (resume: Resume) => void }) {
   }
   async function deleteResume(resume: Resume) {
     if (
-      !window.confirm(
-        `Delete “${resume.title}”? This action cannot be undone.`,
-      )
+      !window.confirm(`Delete “${resume.title}”? This action cannot be undone.`)
     )
       return;
 
@@ -50,7 +49,10 @@ export function Dashboard({ onEdit }: { onEdit: (resume: Resume) => void }) {
     <section>
       <div className="toolbar">
         <h2>Your résumés</h2>
-        <button onClick={create}>New résumé</button>
+        <button onClick={create}>
+          <Icon name="plus" />
+          New résumé
+        </button>
       </div>
       {resumes.isLoading && <p>Loading…</p>}
       {deleteError && <p role="alert">{deleteError}</p>}
@@ -62,6 +64,7 @@ export function Dashboard({ onEdit }: { onEdit: (resume: Resume) => void }) {
               disabled={deletingId === resume.id}
               onClick={() => onEdit(resume)}
             >
+              <Icon name="edit" />
               <strong>{resume.title}</strong>
               <span>Saved {new Date(resume.updated_at).toLocaleString()}</span>
             </button>
@@ -70,6 +73,7 @@ export function Dashboard({ onEdit }: { onEdit: (resume: Resume) => void }) {
               disabled={deletingId === resume.id}
               onClick={() => deleteResume(resume)}
             >
+              <Icon name="trash" />
               {deletingId === resume.id ? "Deleting…" : "Delete"}
             </button>
           </article>

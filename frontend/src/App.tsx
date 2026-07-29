@@ -3,6 +3,7 @@ import { AuthForm } from "./AuthForm";
 import { Dashboard } from "./Dashboard";
 import type { Resume } from "./types";
 import { Editor } from "./Editor";
+import { Icon } from "./Icon";
 
 type Theme = "light" | "dark";
 
@@ -40,6 +41,7 @@ export function App() {
           aria-pressed={theme === "dark"}
           onClick={() => setTheme(nextTheme)}
         >
+          <Icon name={nextTheme === "dark" ? "moon" : "sun"} />
           {nextTheme === "dark" ? "Dark mode" : "Light mode"}
         </button>
       </header>

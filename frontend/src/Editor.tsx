@@ -3,6 +3,7 @@ import { api } from "./api";
 import type { Resume } from "./types";
 import { Preview } from "./Preview";
 import { SectionEditor } from "./SectionEditor";
+import { Icon } from "./Icon";
 
 export const AUTO_SAVE_DELAY_MS = 3 * 60 * 1000;
 
@@ -124,19 +125,22 @@ export function Editor({
     <section>
       <div className="toolbar editor-toolbar">
         <button className="link" onClick={onClose}>
-          ← Dashboard
+          <Icon name="arrow-left" />
+          Dashboard
         </button>
         <div className="editor-actions">
           <button
             disabled={!dirty || state === "saving"}
             onClick={() => void saveResume()}
           >
+            <Icon name="save" />
             {state === "saving" ? "Saving…" : "Save"}
           </button>
           <button
             disabled={state === "saving"}
             onClick={() => void downloadPdf()}
           >
+            <Icon name="download" />
             Download PDF
           </button>
         </div>
