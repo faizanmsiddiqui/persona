@@ -1,0 +1,7 @@
+name: persona-worker
+
+services:
+  worker:
+    image: ubuntu:latest
+    read_only: false
+    command: ["sleep", "infinity"]
